@@ -1,0 +1,15 @@
+<%- include("header") -%>
+
+
+<form action="/venues/<%=venueName%>/creategig" method="post">
+  <div class="form-group">
+    <label>New Gig at <%= venueName %></label>
+    <input type="date" class="form-control" name="newGigDate" value="" placeholder="Band Name">
+    <input type="text" class="form-control" name="newGigGenre" value="" placeholder="Genre">
+    <input type="text" class="form-control" name="newGigOnBill" value="" placeholder="Website">
+    <button type="submit" class="btn btn-primary" name="button"></button>
+  </div>
+</form>
+
+
+<%- include("footer") -%>

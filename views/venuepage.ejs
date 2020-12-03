@@ -1,0 +1,24 @@
+<%- include("header") -%>
+
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title"><%= venue.venueName%></h5>
+    <p class="card-text"><%= venue.address%></p>
+    <p class="card-text"><%= venue.bookingEmail%></p>
+    <p class="card-text"><%= venue.venueWebsite%></p>
+    <p class="card-text"><%= venue.aboutVenue%></p>
+    <a href="/venues/<%=venue.venueName%>/creategig" class="btn btn-primary">Create Gig</a>
+  </div>
+</div>
+
+<% venue.gigs.forEach(function(gig){ %>
+  <div class="card">
+    <div class="card-body">
+      <p class="card-text"><%= gig.date%></p>
+      <p class="card-text"><%= gig.genre%></p>
+      <p class="card-text"><%= gig.onBill%></p>
+    </div>
+  </div>
+<%})%>
+
+<%- include("footer") -%>

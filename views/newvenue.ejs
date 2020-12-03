@@ -1,0 +1,19 @@
+<%- include("header") -%>
+
+<form action="/newvenue" method="post">
+  <div class="form-group">
+    <label>New Venue</label>
+    <input type="text" class="form-control" name="newVenueName" value="" placeholder="Venue Name">
+    <input type="text" class="form-control" name="newVenueAddress" value="" placeholder="Address">
+    <input type="text" class="form-control" name="newVenueEmail" value="" placeholder="Booking Email">
+    <input type="text" class="form-control" name="newVenueWebsite" value="" placeholder="Website">
+    <textarea name="newVenueAbout" placeholder="About" rows="8" cols="80"></textarea>
+    <button type="submit" class="btn btn-primary" name="button"></button>
+  </div>
+</form>
+
+
+
+
+
+<%- include("footer") -%>
