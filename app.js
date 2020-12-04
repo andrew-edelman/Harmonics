@@ -3,8 +3,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require('mongoose');
-const bcrypt = require("bcrypt");
-const saltRounds = 10;
+const session = require('express-session');
+const passport = require("passport");
+const passportLocalMongoose = require("passport-local-mongoose");
 
 const app = express();
 
@@ -14,6 +15,82 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(express.static("public"));
+
+app.use(session({
+  secret: process.env.secret,
+  resave: false,
+  saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+//Mongoose DB Setup
+
+//Create database connection
+
+mongoose.connect("mongodb://localhost:27017/harmonicsDB", {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.set("useCreateIndex", true);
+
+//Create collection schema
+const gigSchema = new mongoose.Schema ({
+  date: {
+    type: Date,
+    required: [true]
+  },
+  genre: String,
+  onBill: String
+});
+
+const venueSchema = new mongoose.Schema ({
+  venueName: {
+	type: String,
+	required: [true]
+  },
+  address: String,
+  bookingEmail: {
+    type: String,
+    required: [true]
+  },
+  venueWebsite: String,
+  gigs: [gigSchema],
+  aboutVenue: String
+});
+
+const bandSchema = new mongoose.Schema ({
+  bandName: {
+    type: String,
+    required: [true]
+  },
+  genre: String,
+  bandWebsite: String,
+  bandEmail: String,
+  linkToMusic: String,
+  aboutBand: String
+});
+
+const userSchema = new mongoose.Schema ({
+  email: String,
+  password: String
+});
+
+userSchema.plugin(passportLocalMongoose);
+
+//Create model and collection using a schema
+//The collection name should be singular and capitalized, mongoose will make it plural and uncapitalize the name
+
+const Venue = mongoose.model("Venue", venueSchema);
+
+const Gig = mongoose.model("Gig", gigSchema);
+
+const Band = mongoose.model("Band", bandSchema);
+
+const User = mongoose.model("User", userSchema);
+
+passport.use(User.createStrategy());
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 //Create root route
 
@@ -126,22 +203,22 @@ app.route("/login")
   res.render("login");
 })
 .post(function(req, res){
-  const username = req.body.username;
-  const password = req.body.password;
 
-  User.findOne({email: username}, function(err, foundUser){
+  const user = new User({
+    username: req.body.username,
+    password: req.body.password
+  });
+
+  req.login(user, function(err){
     if (err){
       console.log(err);
-    } else {
-      if (foundUser){
-        bcrypt.compare(password, foundUser.password, function(err, result){
-          if (result === true){
-            res.redirect("/");
-          }
-        });
-      }
+    } else{
+      passport.authenticate("local")(req, res, function(){
+        res.redirect("/");
+      });
     }
   });
+
 });
 
 app.route("/register")
@@ -150,79 +227,24 @@ app.route("/register")
 })
 .post(function(req, res){
 
-  bcrypt.hash(req.body.password, saltRounds, function(err, hash){
-
-    const newUser = new User({
-      email: req.body.username,
-      password: hash
-    });
-
-    newUser.save();
-
-    res.redirect("/");
-
+  User.register({username: req.body.username}, req.body.password, function(err, user){
+    if (err){
+      console.log(err);
+      res.redirect("/register");
+    } else {
+      passport.authenticate("local")(req, res, function(){
+        res.redirect("/");
+      });
+    }
   });
 
 });
 
-//Mongoose DB Setup
-
-//Create database connection
-
-mongoose.connect("mongodb://localhost:27017/harmonicsDB", {useNewUrlParser: true, useUnifiedTopology: true});
-
-//Create collection schema
-const gigSchema = new mongoose.Schema ({
-  date: {
-    type: Date,
-    required: [true]
-  },
-  genre: String,
-  onBill: String
+app.route("/logout")
+.get(function(req, res){
+  req.logout();
+  res.redirect("/");
 });
-
-const venueSchema = new mongoose.Schema ({
-  venueName: {
-	type: String,
-	required: [true]
-  },
-  address: String,
-  bookingEmail: {
-    type: String,
-    required: [true]
-  },
-  venueWebsite: String,
-  gigs: [gigSchema],
-  aboutVenue: String
-});
-
-const bandSchema = new mongoose.Schema ({
-  bandName: {
-    type: String,
-    required: [true]
-  },
-  genre: String,
-  bandWebsite: String,
-  bandEmail: String,
-  linkToMusic: String,
-  aboutBand: String
-});
-
-const userSchema = new mongoose.Schema ({
-  email: String,
-  password: String
-});
-
-//Create model and collection using a schema
-//The collection name should be singular and capitalized, mongoose will make it plural and uncapitalize the name
-
-const Venue = mongoose.model("Venue", venueSchema);
-
-const Gig = mongoose.model("Gig", gigSchema);
-
-const Band = mongoose.model("Band", bandSchema);
-
-const User = mongoose.model("User", userSchema);
 
 //Create starter data
 
