@@ -1,7 +1,11 @@
+require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require('mongoose');
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -116,6 +120,51 @@ app.route("/venues/:venueName/creategig")
 
 });
 
+//User Authentication Routes
+app.route("/login")
+.get(function(req, res){
+  res.render("login");
+})
+.post(function(req, res){
+  const username = req.body.username;
+  const password = req.body.password;
+
+  User.findOne({email: username}, function(err, foundUser){
+    if (err){
+      console.log(err);
+    } else {
+      if (foundUser){
+        bcrypt.compare(password, foundUser.password, function(err, result){
+          if (result === true){
+            res.redirect("/");
+          }
+        });
+      }
+    }
+  });
+});
+
+app.route("/register")
+.get(function(req, res){
+  res.render("register");
+})
+.post(function(req, res){
+
+  bcrypt.hash(req.body.password, saltRounds, function(err, hash){
+
+    const newUser = new User({
+      email: req.body.username,
+      password: hash
+    });
+
+    newUser.save();
+
+    res.redirect("/");
+
+  });
+
+});
+
 //Mongoose DB Setup
 
 //Create database connection
@@ -159,6 +208,11 @@ const bandSchema = new mongoose.Schema ({
   aboutBand: String
 });
 
+const userSchema = new mongoose.Schema ({
+  email: String,
+  password: String
+});
+
 //Create model and collection using a schema
 //The collection name should be singular and capitalized, mongoose will make it plural and uncapitalize the name
 
@@ -167,6 +221,8 @@ const Venue = mongoose.model("Venue", venueSchema);
 const Gig = mongoose.model("Gig", gigSchema);
 
 const Band = mongoose.model("Band", bandSchema);
+
+const User = mongoose.model("User", userSchema);
 
 //Create starter data
 
