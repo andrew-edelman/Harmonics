@@ -1,17 +1,7 @@
 <%- include("header") -%>
 
 
-<form action="/newband" method="get">
-  <button type="submit" class="btn btn-primary">New Band</button>
-</form>
 
-<form action="/newvenue" method="get">
-  <button type="submit" class="btn btn-primary">New Venue</button>
-</form>
-
-<form action="/venues" method="get">
-  <button type="submit" class="btn btn-primary">View Venues</button>
-</form>
 
 <% venueList.forEach(function(venue){ %>
 
@@ -21,9 +11,8 @@
         <a href="/venues/<%=venue.venueName%>"><%= venue.venueName%></a>
         <p class="card-text"><%= gig.date%></p>
         <p class="card-text"><%= gig.genre%></p>
-        <p class="card-text"><%= gig.onBill%></p>
-        <p class="card-text"><%= venue.address%></p>
-        <p class="card-text"><%= venue.bookingEmail%></p>
+        <p class="card-text"><%= venue.venueAddress%></p>
+        <p class="card-text"><%= venue.venueBookingEmail%></p>
         <p class="card-text"><%= venue.venueWebsite%></p>
       </div>
     </div>

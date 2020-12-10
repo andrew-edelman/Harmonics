@@ -1,0 +1,17 @@
+<%- include("header") -%>
+
+
+<h1>Welcome <%=currentUser.firstName%></h1>
+
+<form action="/createband" method="get">
+  <button type="submit" class="btn btn-primary">Create Band</button>
+</form>
+
+<form action="/createvenue" method="get">
+  <button type="submit" class="btn btn-primary">Create Venue</button>
+</form>
+
+
+
+
+<%- include("footer") -%>

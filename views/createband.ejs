@@ -1,0 +1,29 @@
+<%- include("header") -%>
+
+<form class="" action="/createband" method="post">
+  <label>New Band</label>
+  <div class="form-group">
+    <input type="text" class="form-control" name="bandName" value="" placeholder="Band Name">
+  </div>
+  <div class="form-group">
+    <input type="email" class="form-control" name="bandEmail" value="" placeholder="Email">
+  </div>
+  <div class="form-group">
+    <input type="text" class="form-control" name="bandGenre" value="" placeholder="Genre">
+  </div>
+  <div class="form-group">
+    <input type="text" class="form-control" name="bandWebsite" value="" placeholder="Website">
+  </div>
+  <div class="form-group">
+    <input type="text" class="form-control" name="bandMusic" value="" placeholder="Link to Music">
+  </div>
+  <div class="form-group">
+    <textarea name="bandAbout" rows="8" cols="80" placeholder="About"></textarea>
+  </div>
+  <button type="submit" class="btn btn-dark">Create Band</button>
+</form>
+
+
+
+
+<%- include("footer") -%>

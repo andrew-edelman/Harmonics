@@ -1,0 +1,15 @@
+<%- include("header") -%>
+
+<form class="" action="/createvenue" method="post">
+  <label>New Venue</label>
+  <input type="text" class="form-control" name="venueName" value="" placeholder="Venue Name">
+  <input type="email" class="form-control" name="venueBookingEmail" value="" placeholder="Booking Email">
+  <input type="text" class="form-control" name="venueAddress" value="" placeholder="Address">
+  <input type="text" class="form-control" name="venueWebsite" value="" placeholder="Website">
+  <textarea name="venueAbout" placeholder="About" rows="8" cols="80"></textarea>
+  <button type="submit" class="btn btn-dark">Create Venue</button>
+</form>
+
+
+
+<%- include("footer") -%>

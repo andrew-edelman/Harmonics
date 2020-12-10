@@ -3,11 +3,13 @@
 <div class="card">
   <div class="card-body">
     <h5 class="card-title"><%= venue.venueName%></h5>
-    <p class="card-text"><%= venue.address%></p>
-    <p class="card-text"><%= venue.bookingEmail%></p>
+    <p class="card-text"><%= venue.venueAddress%></p>
+    <p class="card-text"><%= venue.venueBookingEmail%></p>
     <p class="card-text"><%= venue.venueWebsite%></p>
-    <p class="card-text"><%= venue.aboutVenue%></p>
-    <a href="/venues/<%=venue.venueName%>/creategig" class="btn btn-primary">Create Gig</a>
+    <p class="card-text"><%= venue.venueAbout%></p>
+    <%if(myVenue === true){%>
+      <a href="/venues/<%=venue.venueName%>/creategig" class="btn btn-primary">Create Gig</a>
+    <%}%>
   </div>
 </div>
 
@@ -16,7 +18,6 @@
     <div class="card-body">
       <p class="card-text"><%= gig.date%></p>
       <p class="card-text"><%= gig.genre%></p>
-      <p class="card-text"><%= gig.onBill%></p>
     </div>
   </div>
 <%})%>
