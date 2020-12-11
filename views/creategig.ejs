@@ -1,11 +1,12 @@
 <%- include("header") -%>
 
 
-<form action="/venues/<%=venueName%>/creategig" method="post">
+<form action="/venues/<%=venue._id%>/creategig" method="post">
   <div class="form-group">
-    <label>New Gig at <%= venueName %></label>
+    <label>New Gig at <%= venue.venueName %></label>
     <input type="date" class="form-control" name="newGigDate" value="" placeholder="Date">
     <input type="text" class="form-control" name="newGigGenre" value="" placeholder="Genre">
+    <input type="hidden" name="venueID" value="<%=venue._id%>">
     <button type="submit" class="btn btn-primary" name="button">Create Gig</button>
   </div>
 </form>

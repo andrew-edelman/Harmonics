@@ -1,5 +1,7 @@
 <%- include("header") -%>
 
+
+
 <div class="card">
   <div class="card-body">
     <h5 class="card-title"><%= venue.venueName%></h5>
@@ -8,7 +10,7 @@
     <p class="card-text"><%= venue.venueWebsite%></p>
     <p class="card-text"><%= venue.venueAbout%></p>
     <%if(myVenue === true){%>
-      <a href="/venues/<%=venue.venueName%>/creategig" class="btn btn-primary">Create Gig</a>
+      <a href="/venues/<%=venue._id%>/creategig" class="btn btn-primary">Create Gig</a>
     <%}%>
   </div>
 </div>

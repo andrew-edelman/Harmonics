@@ -2,15 +2,17 @@
 
 
 <% venueList.forEach(function(venue){ %>
-
+<form class="" action="/venues/<%=venue._id%>" method="get">
   <div class="card">
     <div class="card-body">
-      <a href="/venues/<%=venue.venueName%>"><%= venue.venueName%></a>
+      <button class="btn-link" type="submit" name="venueName" value="<%= venue.venueName%>"><%= venue.venueName%></button>
       <p class="card-text"><%= venue.venueAddress%></p>
       <p class="card-text"><%= venue.venueBookingEmail%></p>
       <p class="card-text"><%= venue.venueWebsite%></p>
     </div>
   </div>
+</form>
+
 
 <%})%>
 

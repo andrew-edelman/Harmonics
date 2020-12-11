@@ -138,13 +138,14 @@ app.route("/venues")
 
 //Route for accessing a single venue details
 
-app.route("/venues/:venueName")
+app.route("/venues/:_id")
 .get(function(req, res){
-  var foundVenueName = req.params.venueName;
+  console.log(req.params);
+  var foundVenueID = req.params._id;
 
-  Venue.findOne({venueName: foundVenueName}, function(err, foundVenue){
+  Venue.findById({_id: foundVenueID}, function(err, foundVenue){
     console.log(foundVenue);
-    User.findOne({venues: {$elemMatch: {venueName: foundVenueName}}}, function(err, venueUser){
+    User.findOne({venues: {$elemMatch: {_id: foundVenueID}}}, function(err, venueUser){
       console.log(venueUser);
       var myVenue = _.isEqual(venueUser._id, req.user._id);
       if (myVenue == true){
@@ -163,9 +164,12 @@ app.route("/venues/:venueName")
 
 //Route for creating a new gig
 
-app.route("/venues/:venueName/creategig")
+app.route("/venues/:_id/creategig")
 .get(function(req, res){
-  res.render("creategig", {venueName: req.params.venueName, currentUser: req.user});
+  Venue.findOne({_id: req.params._id}, function(err, foundVenue){
+    res.render("creategig", {venue: foundVenue, currentUser: req.user});
+  });
+
 })
 .post(function(req, res){
   const newGig = new Gig ({
@@ -175,16 +179,25 @@ app.route("/venues/:venueName/creategig")
 
   newGig.save();
 
-  var pushGig = {date: req.body.newGigDate, genre: req.body.newGigGenre};
+  // var pushGig = {date: req.body.newGigDate, genre: req.body.newGigGenre};
 
-  Venue.updateOne({venueName: req.params.venueName}, {$push: {gigs: pushGig}}, function(err){
+  Venue.updateOne({_id: req.body.venueID}, {$push: {gigs: newGig}}, function(err){
     if (!err) {
       console.log("gig successfully created to venue");
     } else {
       console.log(err);
     }
   });
-  res.redirect("/venues/" + req.params.venueName);
+
+  User.updateOne({_id: req.user._id, 'venues._id': req.body.venueID}, {$push: {'venues.$.gigs': newGig}}, {upsert: true}, function(err){
+    if (!err) {
+      console.log("gig successfully pushed to user");
+    } else {
+      console.log(err);
+    }
+  });
+
+  res.redirect("/venues/" + req.body.venueID);
 
 });
 
@@ -207,14 +220,14 @@ app.route("/createband")
 
   newBand.save();
 
-  var pushBand = {bandName: req.body.bandName,
-  bandEmail: req.body.bandEmail,
-  bandGenre: req.body.bandGenre,
-  bandWebsite: req.body.bandWebsite,
-  bandMusic: req.body.bandMusic,
-  bandAbout: req.body.bandAbout};
+  // var pushBand = {bandName: req.body.bandName,
+  // bandEmail: req.body.bandEmail,
+  // bandGenre: req.body.bandGenre,
+  // bandWebsite: req.body.bandWebsite,
+  // bandMusic: req.body.bandMusic,
+  // bandAbout: req.body.bandAbout};
 
-  User.updateOne({_id: req.user._id}, {$push: {bands: pushBand}}, function(err){
+  User.updateOne({_id: req.user._id}, {$push: {bands: newBand}}, function(err){
     if (!err) {
       console.log("band successfully created");
     } else {
@@ -244,13 +257,13 @@ app.route("/createvenue")
 
   newVenue.save();
 
-  var pushVenue = {venueName: req.body.venueName,
-  venueBookingEmail: req.body.venueBookingEmail,
-  venueAddress: req.body.venueAddress,
-  venueWebsite: req.body.venueWebsite,
-  venueAbout: req.body.venueAbout};
+  // var pushVenue = {venueName: req.body.venueName,
+  // venueBookingEmail: req.body.venueBookingEmail,
+  // venueAddress: req.body.venueAddress,
+  // venueWebsite: req.body.venueWebsite,
+  // venueAbout: req.body.venueAbout};
 
-  User.updateOne({_id: req.user._id}, {$push: {venues: pushVenue}}, function(err){
+  User.updateOne({_id: req.user._id}, {$push: {venues: newVenue}}, function(err){
     if (!err) {
       console.log("venue successfully created");
     } else {
@@ -258,7 +271,7 @@ app.route("/createvenue")
     }
   });
 
-  res.redirect("/venues/" + req.body.venueName);
+  res.redirect("/profile/" + req.user._id);
 
 });
 
