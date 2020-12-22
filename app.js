@@ -38,10 +38,12 @@ mongoose.set("useCreateIndex", true);
 //Create collection schema
 
 const gigSchema = new mongoose.Schema ({
+  hostVenue: String,
   date: {
     type: Date,
     required: [true]
   },
+  onBill: [String],
   genre: String,
 });
 
@@ -118,9 +120,13 @@ app.get("/", function(req, res){
 
 app.get("/gigslist", function(req, res){
 
-  Venue.find({}, function(err, foundVenues){
 
-    res.render("gigslist", {venueList: foundVenues, currentUser: req.user});
+
+  Venue.find({}, function(err, foundVenues){
+    User.findOne({_id: req.user._id}).exec(function(err, user){
+      var count = user.bands.length
+      res.render("gigslist", {venueList: foundVenues, currentUser: req.user, bandCount: count});
+    });
   });
 
 });
@@ -144,9 +150,7 @@ app.route("/venues/:_id")
   var foundVenueID = req.params._id;
 
   Venue.findById({_id: foundVenueID}, function(err, foundVenue){
-    console.log(foundVenue);
     User.findOne({venues: {$elemMatch: {_id: foundVenueID}}}, function(err, venueUser){
-      console.log(venueUser);
       var myVenue = _.isEqual(venueUser._id, req.user._id);
       if (myVenue == true){
         console.log("my venue");
@@ -172,7 +176,9 @@ app.route("/venues/:_id/creategig")
 
 })
 .post(function(req, res){
+  console.log(req.params)
   const newGig = new Gig ({
+    hostVenue: req.body.venueName,
     date: req.body.newGigDate,
     genre: req.body.newGigGenre,
   });
@@ -220,12 +226,6 @@ app.route("/createband")
 
   newBand.save();
 
-  // var pushBand = {bandName: req.body.bandName,
-  // bandEmail: req.body.bandEmail,
-  // bandGenre: req.body.bandGenre,
-  // bandWebsite: req.body.bandWebsite,
-  // bandMusic: req.body.bandMusic,
-  // bandAbout: req.body.bandAbout};
 
   User.updateOne({_id: req.user._id}, {$push: {bands: newBand}}, function(err){
     if (!err) {
@@ -257,11 +257,6 @@ app.route("/createvenue")
 
   newVenue.save();
 
-  // var pushVenue = {venueName: req.body.venueName,
-  // venueBookingEmail: req.body.venueBookingEmail,
-  // venueAddress: req.body.venueAddress,
-  // venueWebsite: req.body.venueWebsite,
-  // venueAbout: req.body.venueAbout};
 
   User.updateOne({_id: req.user._id}, {$push: {venues: newVenue}}, function(err){
     if (!err) {

@@ -11,7 +11,73 @@
   <button type="submit" class="btn btn-primary">Create Venue</button>
 </form>
 
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link" id="gigsplaying-tab" data-toggle="tab" href="#gigsplaying" role="tab" aria-controls="gigsplaying" aria-selected="true">Gigs Playing</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="gigshosting-tab" data-toggle="tab" href="#gigshosting" role="tab" aria-controls="gigshosting" aria-selected="false">Gigs Hosting</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="bands-tab" data-toggle="tab" href="#bands" role="tab" aria-controls="bands" aria-selected="false">My Bands</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="venues-tab" data-toggle="tab" href="#venues" role="tab" aria-controls="venues" aria-selected="false">My Venues</a>
+  </li>
+</ul>
 
+<!-- Tab panes -->
+<div class="tab-content">
+  <div class="tab-pane fade" id="gigsplaying" role="tabpanel" aria-labelledby="gigsplaying-tab">
+    hello
+  </div>
+  <div class="tab-pane fade" id="gigshosting" role="tabpanel" aria-labelledby="gigshosting-tab">
+    <% currentUser.venues.forEach(function(venue){ %>
+
+      <% venue.gigs.forEach(function(gig){ %>
+        <div class="card">
+          <div class="card-body">
+            <a href="/venues/<%=venue.venueName%>"><%= venue.venueName%></a>
+            <p class="card-text"><%= gig.date%></p>
+            <p class="card-text"><%= gig.genre%></p>
+          </div>
+        </div>
+      <%})%>
+    <%})%>
+  </div>
+  <div class="tab-pane fade" id="bands" role="tabpanel" aria-labelledby="bands-tab">
+    <% currentUser.bands.forEach(function(band){ %>
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title"><%=band.bandName%></h5>
+            <p class="card-text"><%= band.bandEmail%></p>
+            <p class="card-text"><%= band.bandGenre%></p>
+            <p class="card-text"><%= band.bandWebsite%></p>
+            <p class="card-text"><%= band.bandMusic%></p>
+          </div>
+        </div>
+
+    <%})%>
+  </div>
+  <div class="tab-pane fade" id="venues" role="tabpanel" aria-labelledby="venues-tab">
+    <% currentUser.venues.forEach(function(venue){ %>
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">
+              <a href="/venues/<%=venue._id%>"><%= venue.venueName%></a>
+            </h5>
+            <p class="card-text"><%= venue.venueBookingEmail%></p>
+            <p class="card-text"><%= venue.venueAddress%></p>
+            <p class="card-text"><%= venue.venueWebsite%></p>
+          </div>
+        </div>
+
+    <%})%>
+  </div>
+</div>
 
 
 <%- include("footer") -%>

@@ -8,12 +8,32 @@
   <% venue.gigs.forEach(function(gig){ %>
     <div class="card">
       <div class="card-body">
-        <a href="/venues/<%=venue.venueName%>"><%= venue.venueName%></a>
+        <a href="/venues/<%=venue._id%>"><%= venue.venueName%></a>
         <p class="card-text"><%= gig.date%></p>
         <p class="card-text"><%= gig.genre%></p>
         <p class="card-text"><%= venue.venueAddress%></p>
         <p class="card-text"><%= venue.venueBookingEmail%></p>
         <p class="card-text"><%= venue.venueWebsite%></p>
+        <%if(currentUser && bandCount>0){%>
+          <% if (bandCount==1) {%>
+            <button type="button" class="btn btn-primary">
+              Request Booking
+            </button>
+          <%} else if (bandCount>1){%>
+            <form class="" action="index.html" method="post">
+              <div class="form-group">
+                <select class="form-control" name="bandSelection">
+                  <% currentUser.bands.forEach(function(band){ %>
+                    <option><%=band.bandName%></option>
+                  <%})%>
+                </select>
+                <button type="submit" class="btn btn-primary">
+                  Request Booking
+                </button>
+              </div>
+            </form>
+          <%}%>
+        <%}%>
       </div>
     </div>
   <%})%>
